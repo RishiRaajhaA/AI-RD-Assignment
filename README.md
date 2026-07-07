@@ -1,176 +1,185 @@
-# AI R&D Assignment — Parametric Curve Parameter Estimation
+# AI R&D Assignment – Parametric Curve Parameter Estimation
 
-## Problem Statement
+## Overview
 
-The assignment asks us to find the unknown parameters of the given parametric curve:
+This repository contains the solution for the AI Research & Development assignment. The objective is to estimate the unknown parameters of a nonlinear parametric curve using the given dataset (`xy_data.csv`).
 
-\[
-x(t)=t\cos(\theta)-e^{M|t|}\sin(0.3t)\sin(\theta)+X
-\]
-
-\[
-y(t)=42+t\sin(\theta)+e^{M|t|}\sin(0.3t)\cos(\theta)
-\]
-
-The unknown parameters are:
-
-- \(\theta\)
-- \(M\)
-- \(X\)
-
-The given parameter ranges are:
-
-- \(0^\circ < \theta < 50^\circ\)
-- \(-0.05 < M < 0.05\)
-- \(0 < X < 100\)
-- \(6 \leq t \leq 60\)
-
-The file `xy_data.csv` contains points that lie on the curve. The objective is to recover the values of \(\theta\), \(M\), and \(X\).
+The parameters are estimated using **Differential Evolution**, a global optimization algorithm, by minimizing the **L1 distance** between the predicted curve and the given data points.
 
 ---
 
-## Method Used
+# Problem Statement
 
-This problem is treated as a parameter estimation problem.
-
-The steps followed are:
-
-1. Load the given `(x, y)` data from `xy_data.csv`.
-2. Define the given parametric curve in Python.
-3. Uniformly sample values of `t` from 6 to 60.
-4. Generate predicted curve points for a trial set of parameters \((\theta, M, X)\).
-5. Compare the predicted curve with the given data using a symmetric nearest-neighbour L1 distance.
-6. Use global optimization to minimize the L1 distance.
-7. Extract the best values of \(\theta\), \(M\), and \(X\).
-8. Save plots and result files for verification.
-
-I used `scipy.optimize.differential_evolution` because:
-
-- the equation is nonlinear,
-- the parameters are bounded,
-- it does not require gradients,
-- it is suitable for global optimization problems.
-
----
-
-## L1 Loss Function
-
-The assignment evaluates the L1 distance between uniformly sampled expected and predicted curves. Since the data points may not necessarily be ordered by the parameter `t`, the code uses a symmetric nearest-neighbour L1 distance.
-
-For a predicted curve point set \(P\) and the given data point set \(D\), the loss is:
-
-\[
-L = \text{mean}_{d \in D}\min_{p \in P}\|d-p\|_1 + \text{mean}_{p \in P}\min_{d \in D}\|p-d\|_1
-\]
-
-This compares the given points to the predicted curve and also compares the predicted curve back to the given points.
-
----
-
-## Final Recovered Parameters
-
-The optimizer recovered:
+The given parametric curve is:
 
 ```text
-theta = 29.99956345 degrees
-theta = 0.52359116 radians
-M     = 0.03000128
-X     = 54.99855163
-L1 Loss = 0.0400858583
+x(t) = t*cos(theta) - exp(M|t|)*sin(0.3t)*sin(theta) + X
+
+y(t) = 42 + t*sin(theta) + exp(M|t|)*sin(0.3t)*cos(theta)
 ```
 
-Rounded final answer:
+Unknown parameters:
 
-```text
-theta = 30 degrees
-M     = 0.03
-X     = 55
-```
+- θ (theta)
+- M
+- X
+
+Parameter ranges:
+
+- 0° < θ < 50°
+- -0.05 < M < 0.05
+- 0 < X < 100
+- 6 ≤ t ≤ 60
+
+The file `xy_data.csv` contains sampled points from the curve. The objective is to recover the unknown parameters by minimizing the L1 distance between the predicted and observed points.
 
 ---
 
-## Optimization Statistics
+# Methodology
+
+1. Load the provided `xy_data.csv`.
+2. Implement the given parametric equations.
+3. Uniformly sample the parameter `t` from 6 to 60.
+4. Generate the predicted curve.
+5. Compute the symmetric nearest-neighbour L1 distance between the predicted curve and the given data.
+6. Use **SciPy Differential Evolution** to estimate the unknown parameters.
+7. Plot the recovered curve against the given data.
+
+---
+
+# Optimization Algorithm
+
+Algorithm Used:
+- Differential Evolution (`scipy.optimize.differential_evolution`)
+
+Objective Function:
+- Symmetric Nearest-Neighbour L1 Distance
+
+---
+
+# Results
+
+Recovered Parameters (rounded):
+
+| Parameter | Value |
+|-----------|-------|
+| θ | **30°** |
+| M | **0.03** |
+| X | **55** |
+
+Recovered Parameters (optimizer output):
+
+| Parameter | Value |
+|-----------|----------------|
+| θ | 29.99956345° |
+| M | 0.03000128 |
+| X | 54.99855163 |
+
+---
+
+# Final Parametric Equation
 
 ```text
-Iterations           : 90
-Function evaluations : 4155
-Optimization success : True
-Optimizer message    : Optimization terminated successfully.
+x(t) = t*cos(0.523599)
+       - exp(0.03|t|)*sin(0.3t)*sin(0.523599)
+       + 55
+
+y(t) = 42
+       + t*sin(0.523599)
+       + exp(0.03|t|)*sin(0.3t)*cos(0.523599)
 ```
 
 ---
 
-## Final Parametric Curve
-
-Using the rounded values:
-
-\[
-x(t)=t\cos(0.523599)-e^{0.03|t|}\sin(0.3t)\sin(0.523599)+55
-\]
-
-\[
-y(t)=42+t\sin(0.523599)+e^{0.03|t|}\sin(0.3t)\cos(0.523599)
-\]
-
-where:
-
-\[
-6 \leq t \leq 60
-\]
-
----
-
-## Desmos / Submission Format
-
-Rounded final submission equation:
+# Desmos / LaTeX Submission Format
 
 ```latex
-\left(t\cos(0.523599)-e^{0.03\left|t\right|}\sin(0.3t)\sin(0.523599)+55,42+t\sin(0.523599)+e^{0.03\left|t\right|}\sin(0.3t)\cos(0.523599)\right)
-```
-
-Equation generated directly from the optimizer:
-
-```latex
-\left(t\cos(0.523591)-e^{0.030001\left|t\right|}\sin(0.3t)\sin(0.523591)+54.998552,42+t\sin(0.523591)+e^{0.030001\left|t\right|}\sin(0.3t)\cos(0.523591)\right)
-```
-
----
-
-## Files Included
-
-```text
-AI_RD_Assignment_Final.ipynb
-main.py
-README.md
-requirements.txt
-xy_data.csv
-plots/given_points.png
-plots/predicted_curve.png
-plots/fitted_curve.png
-results/estimated_parameters.txt
-results/final_equation.txt
+\left(
+t*\cos(0.523599)
+-e^{0.03\left|t\right|}\cdot\sin(0.3t)\sin(0.523599)
++55,
+42+t*\sin(0.523599)
++e^{0.03\left|t\right|}\cdot\sin(0.3t)\cos(0.523599)
+\right)
 ```
 
 ---
 
-## How to Run
+# Repository Structure
 
-Install the required libraries:
+```
+AI_RD_Assignment/
+│
+├── AI_RD_Assignment.ipynb
+├── main.py
+├── README.md
+├── requirements.txt
+├── xy_data.csv
+├── plots/
+│   ├── fitted_curve.png
+│   ├── given_points.png
+│   └── predicted_curve.png
+└── results/
+    ├── estimated_parameters.txt
+    └── final_equation.txt
+```
+
+---
+
+# Requirements
+
+```
+numpy
+pandas
+matplotlib
+scipy
+```
+
+Install dependencies using:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Then either open and run:
+---
 
-```text
-AI_RD_Assignment_Final.ipynb
-```
-
-or run the standalone Python script:
+# Running the Project
 
 ```bash
 python main.py
 ```
 
-Both the notebook and the script load the data, estimate the parameters, plot the fitted curve, save the results, and print the final values.
+or open
+
+```
+AI_RD_Assignment.ipynb
+```
+
+and execute all cells.
+
+---
+
+# Output
+
+The program prints:
+
+- Estimated θ
+- Estimated M
+- Estimated X
+- Final L1 loss
+
+It also generates:
+
+- Fitted curve plot
+- Estimated parameter file
+- Final equation file
+
+---
+
+# Author
+
+**Rishi Raajha A**
+
+B.Tech Artificial Intelligence Engineering
+
+Amrita School of Engineering
