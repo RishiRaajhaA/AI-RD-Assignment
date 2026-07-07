@@ -1,1 +1,18 @@
+AI R&D Assignment - Final Estimated Parameters
 
+Theta (degrees): 29.99956345
+Theta (radians): 0.52359116
+M              : 0.03000128
+X              : 54.99855163
+L1 Loss        : 0.0400858583
+
+Optimization statistics:
+Iterations           : 90
+Function evaluations : 4155
+Optimization success : True
+Optimizer message    : Optimization terminated successfully.
+
+Rounded final answer:
+Theta = 30.00 degrees
+M     = 0.03
+X     = 55.00

@@ -1,0 +1,1 @@
+\left(t\cos(0.523591)-e^{0.030001\left|t\right|}\sin(0.3t)\sin(0.523591)+54.998552,42+t\sin(0.523591)+e^{0.030001\left|t\right|}\sin(0.3t)\cos(0.523591)\right)
